@@ -1,6 +1,43 @@
-# JSCalendar
+<h1 align="center">JSCalendar</h1>
+
+<p align="center">JSON calendars with typed models, time zones, and recurrence.</p>
+
+<p align="center">
+  <a href="https://rubygems.org/gems/jscalendar"><img src="https://img.shields.io/gem/v/jscalendar" alt="Gem version"></a>
+  <a href="https://github.com/ydah/jscalendar/actions/workflows/main.yml"><img src="https://github.com/ydah/jscalendar/actions/workflows/main.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://www.ruby-lang.org/"><img src="https://img.shields.io/badge/Ruby-%3E%3D%203.3-CC342D?logo=ruby&amp;logoColor=white" alt="Ruby 3.3 or later"></a>
+  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="#installation">Installation</a> &middot;
+  <a href="#quick-start">Quick start</a> &middot;
+  <a href="#scope">Scope</a> &middot;
+  <a href="#development">Development</a> &middot;
+  <a href="#license">License</a>
+</p>
 
 Read, validate, build and expand calendar events and tasks using [RFC 8984](https://www.rfc-editor.org/rfc/rfc8984).
+
+## Features
+
+- Build typed events, tasks, and groups while preserving extension fields.
+- Expand Gregorian recurrence with time zones, exclusions, and overrides.
+- Apply validated patches and localizations with configurable resource limits.
+
+## Installation
+
+Add the gem to your Gemfile:
+
+```ruby
+gem "jscalendar"
+```
+
+Then run `bundle install`.
+
+Ruby 3.3 or newer is required. CI checks maintained CRuby versions, Ruby head, JRuby and TruffleRuby on Linux and macOS, and json 2 and 3. Runtime dependencies are `json` and `tzinfo`. Gregorian recurrence generation is implemented by this library. Install `tzinfo-data` on systems without a zoneinfo database, including Windows. No other Gem from this format family is required.
+
+## Quick start
 
 ```ruby
 require "jscalendar"
@@ -21,8 +58,6 @@ instances = copy.occurrences(from: Time.utc(2026, 10, 1), to: Time.utc(2026, 11,
 instances.each { |instance| puts [instance.recurrence_id, instance.start_time, instance.event.title] }
 instances.truncated?
 ```
-
-Install with `gem install jscalendar`. Ruby 3.3 or newer is required. CI checks maintained CRuby versions, Ruby head, JRuby and TruffleRuby on Linux and macOS, and json 2 and 3. Runtime dependencies are `json` and `tzinfo`. Gregorian recurrence generation is implemented by this library. Install `tzinfo-data` on systems without a zoneinfo database, including Windows. No other Gem from this format family is required.
 
 ## Scope
 
@@ -55,6 +90,7 @@ patched = patch.apply(calendar.to_h)
 Strict parsing raises `ValidationError` with `errors` and a JSON Pointer in `pointer`. Lenient parsing preserves invalid fields with diagnostics. Serialization always validates. Unknown root types and malformed JSON raise `ParseError`; resource bounds raise `LimitError`, including in lenient mode. Duplicate keys are rejected with both supported json major versions.
 
 Recurrence overrides ignore the protected property prefixes specified by RFC 8984 §4.3.5. An `excluded: true` override can contain no other change. Localizations ignore disallowed paths. Patches never partially modify their target.
+Localization language tags match without case sensitivity.
 
 ## Time and recurrence
 
@@ -81,7 +117,7 @@ Time-zone results follow the installed TZInfo data. Its explicit future transiti
 
 Pass these keyword options to `parse` or model constructors. `occurrences` additionally requires `to`, defaults to `limit: 1000`, and enforces `timeout: 2.0` seconds over the entire expansion. An exclusion set larger than the candidate budget fails instead of returning an incorrect partial subtraction. Impossible recurrence rules also time out. URIs are data and are never fetched.
 
-## Development and references
+## Development
 
 ```sh
 bundle install
@@ -96,5 +132,13 @@ RFC source documents and 52 generated examples are fetched into ignored `tmp/` w
 `script/update_registry.rb` checks property and enum identifiers against pinned IANA registries, CLDR calendar names and CSS Level 3 color names. Downloaded sources remain in ignored `tmp/registry/`; only identifiers needed for validation are present in the authored metadata. Updating a checksum requires reviewing the corresponding metadata differences. Source terms are available from [IANA](https://www.iana.org/help/licensing-terms), [Unicode](https://www.unicode.org/license.txt) and [W3C](https://www.w3.org/copyright/document-license/).
 
 Every Ruby test job checks all 42 RFC 5545 recurrence examples against the results printed in the downloaded RFC. Finite examples also check for unexpected extra occurrences; infinite examples are checked through the last printed date. RFC 8984's ten examples all round trip. See [specification decisions](docs/specification.md) for errata and extraction corrections.
+
+## Contributing
+
+Bug reports and pull requests are welcome on [GitHub](https://github.com/ydah/jscalendar/issues). See [Development](#development) for the checks to run before submitting a change. Report security vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+
+## License
+
+Released under the [MIT License](LICENSE.txt).
 
 Additional dependencies must offer the MIT license, including development and comparison tools. The Ruby runtime and its standard libraries are exceptions to this policy. Reference documents and registry facts are test/specification inputs, not dependency implementations. See [implementation provenance](docs/provenance.md) for the scope and limits of the source audit.

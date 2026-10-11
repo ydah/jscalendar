@@ -1,6 +1,6 @@
 # Specification decisions
 
-The implementation targets RFC 8984. As checked on 2026-10-11, JSCalendar 2.0 remains draft-ietf-calext-jscalendarbis-21.
+The implementation targets RFC 8984. As checked on 2026-10-12, JSCalendar 2.0 remains draft-ietf-calext-jscalendarbis-22.
 
 - Verified erratum 6873 allows omission of `recurrenceIdTimeZone` for floating instances. The validator applies this correction.
 - Verified erratum 6872 expands the private-sharing allowlist. Sharing-policy enforcement belongs to the calling application; serialization does not redact data.

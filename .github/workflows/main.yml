@@ -81,5 +81,9 @@ jobs:
         env:
           COVERAGE: '1'
       - run: bundle exec ruby script/check_syntax.rb
+      - name: Check GitHub YAML configuration
+        run: |
+          bundle exec ruby script/check_yaml.rb --self-test
+          bundle exec ruby script/check_yaml.rb
       - run: bundle exec rbs -I sig validate
       - run: gem build --strict jscalendar.gemspec
