@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read, validate, build, and expand RFC 8984 calendar events and tasks in Ruby. Typed models keep JSON extensions while supporting patches, localizations, and time zone handling.">
+  <meta name="theme-color" content="#f8fafc">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="jscalendar — Build calendars with time zones and recurrence">
+  <meta property="og:description" content="Read, validate, build, and expand RFC 8984 calendar events and tasks in Ruby. Typed models keep JSON extensions while supporting patches, localizations, and time zone handling.">
+  <meta property="og:url" content="https://ydah.github.io/jscalendar/">
+  <title>jscalendar — Build calendars with time zones and recurrence</title>
+  <link rel="canonical" href="https://ydah.github.io/jscalendar/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="jscalendar home"><img src="favicon.svg" width="32" height="32" alt=""><span>jscalendar</span></a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#installation">Installation</a>
+        <a href="https://github.com/ydah/jscalendar#readme">Documentation</a>
+        <a href="https://github.com/ydah/jscalendar">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="container" tabindex="-1">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <p class="format">JSCalendar / RFC 8984 JSON</p>
+        <h1 id="title">Build calendars with time zones and recurrence</h1>
+        <p class="intro">Read, validate, build, and expand RFC 8984 calendar events and tasks in Ruby. Typed models keep JSON extensions while supporting patches, localizations, and time zone handling.</p>
+        <div class="actions">
+          <a class="button" href="#installation">Get started</a>
+          <a class="text-link" href="https://github.com/ydah/jscalendar#readme">Read the documentation</a>
+        </div>
+        <p class="metadata"><span>Ruby 3.3+</span><a href="https://github.com/ydah/jscalendar/blob/main/LICENSE.txt">MIT license</a><a href="https://rubygems.org/gems/jscalendar">RubyGems</a></p>
+      </div>
+      <figure class="example" id="quick-start">
+        <figcaption><span>Quick start</span><span>Ruby</span></figcaption>
+        <pre tabindex="0" role="region" aria-label="Ruby quick start example"><code>require <span class="token-string">&quot;</span><span class="token-string">jscalendar</span><span class="token-string">&quot;</span>
+
+meeting = JSCalendar::Event.build <span class="token-keyword">do</span> |event|
+  event.title = <span class="token-string">&quot;</span><span class="token-string">Weekly review</span><span class="token-string">&quot;</span>
+  event.start = <span class="token-string">&quot;</span><span class="token-string">2026-10-12T10:00:00</span><span class="token-string">&quot;</span>
+  event.time_zone = <span class="token-string">&quot;</span><span class="token-string">Asia/Tokyo</span><span class="token-string">&quot;</span>
+  event.duration = <span class="token-string">&quot;</span><span class="token-string">PT1H</span><span class="token-string">&quot;</span>
+  event.add_recurrence_rule(frequency: <span class="token-string">&quot;</span><span class="token-string">weekly</span><span class="token-string">&quot;</span>, by_day: [{ day: <span class="token-string">&quot;</span><span class="token-string">mo</span><span class="token-string">&quot;</span> }])
+<span class="token-keyword">end</span>
+
+json = meeting.to_json
+copy = JSCalendar.parse(json)
+copy.start_time <span class="token-comment"># =&gt; 2026-10-12 01:00:00 UTC
+</span>
+instances = copy.occurrences(from: Time.utc(2026, 10, 1), to: Time.utc(2026, 11, 1), limit: 100)
+instances.each { |instance| puts [instance.recurrence_id, instance.start_time, instance.event.title] }
+instances.truncated?</code></pre>
+      </figure>
+    </section>
+    <ul class="features" aria-label="Features">
+        <li><h2>Model calendar data</h2><p>Build events, tasks, and groups with typed accessors while preserving unknown and vendor fields.</p></li>
+        <li><h2>Expand recurrence</h2><p>Generate Gregorian occurrences with time zones, exclusions, additions, and per-instance overrides.</p></li>
+        <li><h2>Apply changes</h2><p>Use validated object patches and language-specific localizations with configurable resource bounds.</p></li>
+    </ul>
+    <section class="section" id="installation" aria-labelledby="installation-title">
+      <h2 id="installation-title">Installation</h2>
+      <div class="section-body">
+        <p>Add the gem to your Gemfile:</p>
+        <pre class="install-command" tabindex="0" role="region" aria-label="Gemfile entry"><code>gem "jscalendar"</code></pre>
+        <p>Run <code>bundle install</code>, then try the <a href="#quick-start">quick start</a>. Requires Ruby 3.3 or later.</p>
+        <p>For supported dependencies and optional integrations, see the <a href="https://github.com/ydah/jscalendar#installation">installation guide</a>.</p>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="scope-title">
+      <h2 id="scope-title">Scope &amp; documentation</h2>
+      <div class="section-body">
+        <p>Recurrence expansion supports Gregorian calendars; non-Gregorian rules, backward/forward skip behavior, and leap-second recurrence raise UnsupportedError. iCalendar conversion, invitations, free/busy services, and alert delivery are outside scope.</p>
+        <p><a href="https://github.com/ydah/jscalendar#readme">Read the full documentation</a> for supported formats, examples, and API details.</p>
+        
+        <ul class="resource-links" aria-label="Project resources">
+          <li><a href="https://github.com/ydah/jscalendar/blob/main/CHANGELOG.md">Changelog</a></li>
+          <li><a href="https://github.com/ydah/jscalendar/issues">Report an issue</a></li>
+          <li><a href="https://github.com/ydah/jscalendar/blob/main/SECURITY.md">Security</a></li>
+          <li><a href="https://github.com/ydah/jscalendar#contributing">Contributing</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer class="container site-footer">
+    <div class="footer-top"><p>jscalendar · Maintained by <a href="https://github.com/ydah">ydah</a></p><p>Open source under the <a href="https://github.com/ydah/jscalendar/blob/main/LICENSE.txt">MIT license</a>.</p></div>
+    <nav class="related" aria-label="Related Ruby gems">
+      <p>More Ruby gems for structured data</p>
+      <ul>
+          <li><a href="https://ydah.github.io/dns_json/">dns_json</a></li>
+          <li><a href="https://ydah.github.io/iodef/">iodef</a></li>
+          <li><a href="https://ydah.github.io/jcard_jcal/">jcard_jcal</a></li>
+          <li><a href="https://ydah.github.io/jscontact/">jscontact</a></li>
+          <li><a href="https://ydah.github.io/sd_jwt/">sd_jwt</a></li>
+          <li><a href="https://ydah.github.io/senml/">senml</a></li>
+          <li><a href="https://ydah.github.io/yang_json/">yang_json</a></li>
+      </ul>
+    </nav>
+  </footer>
+</body>
+</html>

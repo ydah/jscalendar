@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://ydah.github.io/jscalendar/">Website</a> &middot;
   <a href="#installation">Installation</a> &middot;
   <a href="#quick-start">Quick start</a> &middot;
   <a href="#scope">Scope</a> &middot;
