@@ -1,0 +1,15 @@
+{
+  "sources": {
+    "8984": {
+      "url": "https://www.rfc-editor.org/rfc/rfc8984.xml",
+      "sha256": "cbbaa695ce81f645439ac57d622cdf77f8a542f1314d928ae30754fb80515779"
+    },
+    "5545": {
+      "url": "https://www.rfc-editor.org/rfc/rfc5545.txt",
+      "format": "txt",
+      "sha256": "c256f809479d98aa23d71bbd1658b3800ea9f13f41ca56e59c8d2de1b31cbfcb"
+    }
+  },
+  "example_count": 52,
+  "fixtures_sha256": "694cdcef3df43c8f1aaa2893800898bc4f03a61832e07435f976381aeef0f981"
+}

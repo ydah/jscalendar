@@ -1,0 +1,706 @@
+# Independently authored RFC 8984 validation metadata.
+---
+Event:
+  section: '5.1'
+  properties:
+    "@type":
+      type: String
+      section: '5.1'
+      required: true
+    uid:
+      type: String
+      section: '4.1'
+      required: true
+    relatedTo:
+      type: String[Relation]
+      section: '4.1'
+    prodId:
+      type: String
+      section: '4.1'
+    created:
+      type: UTCDateTime
+      section: '4.1'
+    updated:
+      type: UTCDateTime
+      section: '4.1'
+      required: true
+    sequence:
+      type: UnsignedInt
+      section: '4.1'
+      default: 0
+    method:
+      type: String
+      section: '4.1'
+    title:
+      type: String
+      section: '4.2'
+      default: ''
+    description:
+      type: String
+      section: '4.2'
+      default: ''
+    descriptionContentType:
+      type: String
+      section: '4.2'
+      default: text/plain
+    showWithoutTime:
+      type: Boolean
+      section: '4.2'
+      default: false
+    locations:
+      type: Id[Location]
+      section: '4.2'
+    virtualLocations:
+      type: Id[VirtualLocation]
+      section: '4.2'
+    links:
+      type: Id[Link]
+      section: '4.2'
+    locale:
+      type: LanguageTag
+      section: '4.2'
+    keywords:
+      type: String[True]
+      section: '4.2'
+    categories:
+      type: URI[True]
+      section: '4.2'
+    color:
+      type: String
+      section: '4.2'
+    recurrenceId:
+      type: LocalDateTime
+      section: '4.3'
+    recurrenceIdTimeZone:
+      type: TimeZoneId|null
+      section: '4.3'
+      default:
+    recurrenceRules:
+      type: RecurrenceRule[]
+      section: '4.3'
+    excludedRecurrenceRules:
+      type: RecurrenceRule[]
+      section: '4.3'
+    recurrenceOverrides:
+      type: LocalDateTime[PatchObject]
+      section: '4.3'
+    excluded:
+      type: Boolean
+      section: '4.3'
+      default: false
+    priority:
+      type: Int
+      section: '4.4'
+      default: 0
+    freeBusyStatus:
+      type: Enum:freeBusyStatus
+      section: '4.4'
+      default: busy
+    privacy:
+      type: Enum:privacy
+      section: '4.4'
+      default: public
+    replyTo:
+      type: String[URI]
+      section: '4.4'
+    sentBy:
+      type: Email
+      section: '4.4'
+    participants:
+      type: Id[Participant]
+      section: '4.4'
+    requestStatus:
+      type: String
+      section: '4.4'
+    useDefaultAlerts:
+      type: Boolean
+      section: '4.5'
+      default: false
+    alerts:
+      type: Id[Alert]
+      section: '4.5'
+    localizations:
+      type: LanguageTag[PatchObject]
+      section: '4.6'
+    timeZone:
+      type: TimeZoneId|null
+      section: '4.7'
+      default:
+    timeZones:
+      type: String[TimeZone]
+      section: '4.7'
+    start:
+      type: LocalDateTime
+      section: '5.1'
+      required: true
+    duration:
+      type: Duration
+      section: '5.1'
+      default: PT0S
+    status:
+      type: Enum:status
+      section: '5.1'
+      default: confirmed
+Task:
+  section: '5.2'
+  properties:
+    "@type":
+      type: String
+      section: '5.2'
+      required: true
+    uid:
+      type: String
+      section: '4.1'
+      required: true
+    relatedTo:
+      type: String[Relation]
+      section: '4.1'
+    prodId:
+      type: String
+      section: '4.1'
+    created:
+      type: UTCDateTime
+      section: '4.1'
+    updated:
+      type: UTCDateTime
+      section: '4.1'
+      required: true
+    sequence:
+      type: UnsignedInt
+      section: '4.1'
+      default: 0
+    method:
+      type: String
+      section: '4.1'
+    title:
+      type: String
+      section: '4.2'
+      default: ''
+    description:
+      type: String
+      section: '4.2'
+      default: ''
+    descriptionContentType:
+      type: String
+      section: '4.2'
+      default: text/plain
+    showWithoutTime:
+      type: Boolean
+      section: '4.2'
+      default: false
+    locations:
+      type: Id[Location]
+      section: '4.2'
+    virtualLocations:
+      type: Id[VirtualLocation]
+      section: '4.2'
+    links:
+      type: Id[Link]
+      section: '4.2'
+    locale:
+      type: LanguageTag
+      section: '4.2'
+    keywords:
+      type: String[True]
+      section: '4.2'
+    categories:
+      type: URI[True]
+      section: '4.2'
+    color:
+      type: String
+      section: '4.2'
+    recurrenceId:
+      type: LocalDateTime
+      section: '4.3'
+    recurrenceIdTimeZone:
+      type: TimeZoneId|null
+      section: '4.3'
+      default:
+    recurrenceRules:
+      type: RecurrenceRule[]
+      section: '4.3'
+    excludedRecurrenceRules:
+      type: RecurrenceRule[]
+      section: '4.3'
+    recurrenceOverrides:
+      type: LocalDateTime[PatchObject]
+      section: '4.3'
+    excluded:
+      type: Boolean
+      section: '4.3'
+      default: false
+    priority:
+      type: Int
+      section: '4.4'
+      default: 0
+    freeBusyStatus:
+      type: Enum:freeBusyStatus
+      section: '4.4'
+      default: busy
+    privacy:
+      type: Enum:privacy
+      section: '4.4'
+      default: public
+    replyTo:
+      type: String[URI]
+      section: '4.4'
+    sentBy:
+      type: Email
+      section: '4.4'
+    participants:
+      type: Id[Participant]
+      section: '4.4'
+    requestStatus:
+      type: String
+      section: '4.4'
+    useDefaultAlerts:
+      type: Boolean
+      section: '4.5'
+      default: false
+    alerts:
+      type: Id[Alert]
+      section: '4.5'
+    localizations:
+      type: LanguageTag[PatchObject]
+      section: '4.6'
+    timeZone:
+      type: TimeZoneId|null
+      section: '4.7'
+      default:
+    timeZones:
+      type: String[TimeZone]
+      section: '4.7'
+    due:
+      type: LocalDateTime
+      section: '5.2'
+    start:
+      type: LocalDateTime
+      section: '5.2'
+    estimatedDuration:
+      type: Duration
+      section: '5.2'
+    percentComplete:
+      type: UnsignedInt
+      section: '5.2'
+    progress:
+      type: Enum:progress
+      section: '5.2'
+    progressUpdated:
+      type: UTCDateTime
+      section: '5.2'
+Group:
+  section: '5.3'
+  properties:
+    "@type":
+      type: String
+      section: '5.3'
+      required: true
+    uid:
+      type: String
+      section: '5.3'
+      required: true
+    updated:
+      type: UTCDateTime
+      section: '5.3'
+      required: true
+    entries:
+      type: Entry[]
+      section: '5.3'
+      required: true
+    source:
+      type: URI
+      section: '5.3'
+    prodId:
+      type: String
+      section: '4.1'
+    created:
+      type: UTCDateTime
+      section: '4.1'
+    title:
+      type: String
+      section: '4.2'
+      default: ''
+    description:
+      type: String
+      section: '4.2'
+      default: ''
+    descriptionContentType:
+      type: String
+      section: '4.2'
+      default: text/plain
+    links:
+      type: Id[Link]
+      section: '4.2'
+    locale:
+      type: LanguageTag
+      section: '4.2'
+    keywords:
+      type: String[True]
+      section: '4.2'
+    categories:
+      type: URI[True]
+      section: '4.2'
+    color:
+      type: String
+      section: '4.2'
+    timeZones:
+      type: String[TimeZone]
+      section: '4.7'
+Relation:
+  section: 1.4.10
+  properties:
+    "@type":
+      type: String
+      section: 1.4.10
+      required: true
+    relation:
+      type: EnumMap:relation
+      section: 1.4.10
+      default: {}
+Link:
+  section: 1.4.11
+  properties:
+    "@type":
+      type: String
+      section: 1.4.11
+      required: true
+    href:
+      type: URI
+      section: 1.4.11
+      required: true
+    cid:
+      type: String
+      section: 1.4.11
+    contentType:
+      type: String
+      section: 1.4.11
+    size:
+      type: UnsignedInt
+      section: 1.4.11
+    rel:
+      type: Closed:rel
+      section: 1.4.11
+    display:
+      type: Enum:display
+      section: 1.4.11
+    title:
+      type: String
+      section: 1.4.11
+Location:
+  section: 4.2.5
+  properties:
+    "@type":
+      type: String
+      section: 4.2.5
+      required: true
+    name:
+      type: String
+      section: 4.2.5
+    description:
+      type: String
+      section: 4.2.5
+    locationTypes:
+      type: ClosedEnumMap:locationType
+      section: 4.2.5
+    relativeTo:
+      type: Enum:relativeTo
+      section: 4.2.5
+    timeZone:
+      type: TimeZoneId
+      section: 4.2.5
+    coordinates:
+      type: URI
+      section: 4.2.5
+    links:
+      type: Id[Link]
+      section: 4.2.5
+VirtualLocation:
+  section: 4.2.6
+  properties:
+    "@type":
+      type: String
+      section: 4.2.6
+      required: true
+    name:
+      type: String
+      section: 4.2.6
+      default: ''
+    description:
+      type: String
+      section: 4.2.6
+    uri:
+      type: URI
+      section: 4.2.6
+      required: true
+    features:
+      type: EnumMap:feature
+      section: 4.2.6
+Participant:
+  section: 4.4.6
+  properties:
+    "@type":
+      type: String
+      section: 4.4.6
+      required: true
+    name:
+      type: String
+      section: 4.4.6
+    email:
+      type: Email
+      section: 4.4.6
+    description:
+      type: String
+      section: 4.4.6
+    sendTo:
+      type: String[URI]
+      section: 4.4.6
+    kind:
+      type: Enum:kind
+      section: 4.4.6
+    roles:
+      type: EnumMap:role
+      section: 4.4.6
+      required: true
+    locationId:
+      type: Id
+      section: 4.4.6
+    language:
+      type: LanguageTag
+      section: 4.4.6
+    participationStatus:
+      type: Enum:participationStatus
+      section: 4.4.6
+      default: needs-action
+    participationComment:
+      type: String
+      section: 4.4.6
+    expectReply:
+      type: Boolean
+      section: 4.4.6
+      default: false
+    scheduleAgent:
+      type: Enum:scheduleAgent
+      section: 4.4.6
+      default: server
+    scheduleForceSend:
+      type: Boolean
+      section: 4.4.6
+      default: false
+    scheduleSequence:
+      type: UnsignedInt
+      section: 4.4.6
+      default: 0
+    scheduleStatus:
+      type: String[]
+      section: 4.4.6
+    scheduleUpdated:
+      type: UTCDateTime
+      section: 4.4.6
+    sentBy:
+      type: Email
+      section: 4.4.6
+    invitedBy:
+      type: Id
+      section: 4.4.6
+    delegatedTo:
+      type: Id[True]
+      section: 4.4.6
+    delegatedFrom:
+      type: Id[True]
+      section: 4.4.6
+    memberOf:
+      type: Id[True]
+      section: 4.4.6
+    links:
+      type: Id[Link]
+      section: 4.4.6
+    progress:
+      type: Enum:progress
+      section: 4.4.6
+    progressUpdated:
+      type: UTCDateTime
+      section: 4.4.6
+    percentComplete:
+      type: UnsignedInt
+      section: 4.4.6
+Alert:
+  section: 4.5.2
+  properties:
+    "@type":
+      type: String
+      section: 4.5.2
+      required: true
+    trigger:
+      type: Trigger
+      section: 4.5.2
+      required: true
+    acknowledged:
+      type: UTCDateTime
+      section: 4.5.2
+    relatedTo:
+      type: String[Relation]
+      section: 4.5.2
+    action:
+      type: Enum:action
+      section: 4.5.2
+      default: display
+OffsetTrigger:
+  section: 4.5.2
+  properties:
+    "@type":
+      type: String
+      section: 4.5.2
+      required: true
+    offset:
+      type: SignedDuration
+      section: 4.5.2
+      required: true
+    relativeTo:
+      type: Closed:relativeTo
+      section: 4.5.2
+      default: start
+AbsoluteTrigger:
+  section: 4.5.2
+  properties:
+    "@type":
+      type: String
+      section: 4.5.2
+      required: true
+    when:
+      type: UTCDateTime
+      section: 4.5.2
+      required: true
+RecurrenceRule:
+  section: 4.3.3
+  properties:
+    "@type":
+      type: String
+      section: 4.3.3
+      required: true
+    frequency:
+      type: Closed:frequency
+      section: 4.3.3
+      required: true
+    interval:
+      type: UnsignedInt
+      section: 4.3.3
+      default: 1
+    rscale:
+      type: Enum:rscale
+      section: 4.3.3
+      default: gregorian
+    skip:
+      type: Closed:skip
+      section: 4.3.3
+      default: omit
+    firstDayOfWeek:
+      type: Closed:day
+      section: 4.3.3
+      default: mo
+    byDay:
+      type: NDay[]
+      section: 4.3.3
+    byMonthDay:
+      type: Int[]
+      section: 4.3.3
+    byMonth:
+      type: String[]
+      section: 4.3.3
+    byYearDay:
+      type: Int[]
+      section: 4.3.3
+    byWeekNo:
+      type: Int[]
+      section: 4.3.3
+    byHour:
+      type: UnsignedInt[]
+      section: 4.3.3
+    byMinute:
+      type: UnsignedInt[]
+      section: 4.3.3
+    bySecond:
+      type: UnsignedInt[]
+      section: 4.3.3
+    bySetPosition:
+      type: Int[]
+      section: 4.3.3
+    count:
+      type: UnsignedInt
+      section: 4.3.3
+    until:
+      type: LocalDateTime
+      section: 4.3.3
+NDay:
+  section: 4.3.3
+  properties:
+    "@type":
+      type: String
+      section: 4.3.3
+      required: true
+    day:
+      type: Closed:day
+      section: 4.3.3
+      required: true
+    nthOfPeriod:
+      type: Int
+      section: 4.3.3
+TimeZone:
+  section: 4.7.2
+  properties:
+    "@type":
+      type: String
+      section: 4.7.2
+      required: true
+    tzId:
+      type: String
+      section: 4.7.2
+      required: true
+    updated:
+      type: UTCDateTime
+      section: 4.7.2
+    url:
+      type: URI
+      section: 4.7.2
+    validUntil:
+      type: UTCDateTime
+      section: 4.7.2
+    aliases:
+      type: String[True]
+      section: 4.7.2
+    standard:
+      type: TimeZoneRule[]
+      section: 4.7.2
+    daylight:
+      type: TimeZoneRule[]
+      section: 4.7.2
+TimeZoneRule:
+  section: 4.7.2
+  properties:
+    "@type":
+      type: String
+      section: 4.7.2
+      required: true
+    start:
+      type: LocalDateTime
+      section: 4.7.2
+      required: true
+    offsetFrom:
+      type: UTCOffset
+      section: 4.7.2
+      required: true
+    offsetTo:
+      type: UTCOffset
+      section: 4.7.2
+      required: true
+    recurrenceRules:
+      type: RecurrenceRule[]
+      section: 4.7.2
+    recurrenceOverrides:
+      type: LocalDateTime[PatchObject]
+      section: 4.7.2
+    names:
+      type: String[True]
+      section: 4.7.2
+    comments:
+      type: String[]
+      section: 4.7.2

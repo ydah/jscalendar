@@ -1,0 +1,26 @@
+{
+  "jscalendar": {
+    "url": "https://www.iana.org/assignments/jscalendar/jscalendar.xml",
+    "sha256": "3927785737c3e6d11cbb44741cf7e9b094bb799f84923745bef1aff090616ca3"
+  },
+  "rel": {
+    "url": "https://www.iana.org/assignments/link-relations/link-relations.xml",
+    "sha256": "ec9f7285fb6c7b44c1af716c9423a65cb8c13aa623f3871c35097ebaf7a8cdab",
+    "filename": "link-relations.xml"
+  },
+  "locationType": {
+    "url": "https://www.iana.org/assignments/location-type-registry/location-type-registry.xml",
+    "sha256": "3b5ec915e2beac34c011e1dd12a2ed5410cd0254c65890ee83f564b102b23350",
+    "filename": "location-types.xml"
+  },
+  "rscale": {
+    "url": "https://raw.githubusercontent.com/unicode-org/cldr/main/common/bcp47/calendar.xml",
+    "sha256": "60d5672ae8ba22ef5a5a34df4b48607fd02bb025d81708bdd1776cc1a7d66718",
+    "filename": "cldr-calendar.xml"
+  },
+  "color": {
+    "url": "https://www.w3.org/TR/css-color-3/",
+    "sha256": "5961922f98ea1e713bfceb41d252ed9cc1c9431c7acf5e185044fdd9ad660185",
+    "filename": "css-color-3.html"
+  }
+}

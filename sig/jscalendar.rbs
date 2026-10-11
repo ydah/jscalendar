@@ -1,0 +1,652 @@
+module Jscalendar
+  VERSION: String
+  type json_value = nil | bool | Integer | Float | String | Array[json_value] | Hash[String, json_value]
+  type object = Hash[String, json_value]
+  def self.parse: (String source, ?strict: bool, **Integer limits) -> (Event | Task | Group)
+  def self.validate: (String | object source, **Integer limits) -> Array[Violation]
+  class Violation < Struct[untyped]
+    attr_accessor pointer: String
+    attr_accessor message: String
+  end
+  class Error < StandardError
+    attr_reader pointer: String?
+  end
+  class ParseError < Error
+  end
+  class ConversionError < Error
+  end
+  class LimitError < Error
+  end
+  class UnsupportedError < Error
+  end
+  class ValidationError < Error
+    attr_reader errors: Array[Violation]
+  end
+  class Model
+    attr_reader limits: Hash[Symbol, Integer]
+    def self.build: (**untyped properties) ?{ (instance) -> void } -> instance
+    def initialize: (?object data, ?strict: bool, ?time_zones: object, **Integer limits) -> void
+    def []: (String | Symbol) -> untyped
+    def []=: (String | Symbol, untyped) -> untyped
+    def key?: (String | Symbol) -> bool
+    def delete: (String | Symbol) -> untyped
+    def to_h: () -> object
+    def to_json: (?Hash[Symbol, untyped]? options) -> String
+    def errors: () -> Array[Violation]
+    alias warnings errors
+    def valid?: () -> bool
+    def validate!: () -> self
+    def localize: (String) -> instance
+  end
+  class IdMap[A]
+    include Enumerable[[String, A]]
+    def []: (String | Symbol) -> A?
+    def []=: (String | Symbol, object | A) -> untyped
+    def each: () { (String, A) -> void } -> self
+            | () -> Enumerator[[String, A], self]
+    def keys: () -> Array[String]
+    def values: () -> Array[A]
+    def size: () -> Integer
+    alias length size
+    def empty?: () -> bool
+    def key?: (String | Symbol) -> bool
+    def delete: (String | Symbol) -> A?
+    def add: (object | A, ?prefix: String) -> String
+    def to_h: () -> object
+  end
+  class LocalDateTime
+    include Comparable
+    def initialize: (String | LocalDateTime) -> void
+    def self.from_time: (Time) -> LocalDateTime
+    def to_s: () -> String
+    def to_time: () -> Time
+    def <=>: (String | LocalDateTime) -> Integer?
+  end
+  class Duration
+    attr_reader days: Integer
+    attr_reader seconds: Rational
+    def initialize: (String | Duration) -> void
+    def self.from_seconds: (Numeric) -> instance
+    def to_s: () -> String
+    def to_seconds: () -> Rational
+    def add_to: (String | LocalDateTime, ?time_zone: String?, ?time_zones: object) -> LocalDateTime
+  end
+  class SignedDuration < Duration
+  end
+  class PatchObject
+    def initialize: (object, ?max_patches: Integer, **Integer limits) -> void
+    def to_h: () -> object
+    def apply: (object, ?validate: bool) -> object
+  end
+  module RecurringCalendar
+    def start_time: (?time_zone: String?) -> Time
+    def end_time: (?time_zone: String?) -> Time
+    def occurrences: (from: Time, to: Time, ?limit: Integer, ?time_zone: String?, ?timeout: Numeric) -> Occurrences
+    def add_recurrence_rule: (**untyped properties) -> self
+  end
+  class Occurrence
+    attr_reader recurrence_id: LocalDateTime
+    attr_reader event: Event | Task
+    alias calendar event
+    def start_time: (?time_zone: String?) -> Time
+  end
+  class Occurrences
+    include Enumerable[Occurrence]
+    def each: () { (Occurrence) -> void } -> self
+            | () -> Enumerator[Occurrence, self]
+    def truncated?: () -> bool
+  end
+  class Event < Model
+    include RecurringCalendar
+    def uid: () -> (String)?
+    def uid=: (untyped) -> untyped
+    def relatedTo: () -> (IdMap[Relation])?
+    def relatedTo=: (untyped) -> untyped
+    alias related_to relatedTo
+    alias related_to= relatedTo=
+    def prodId: () -> (String)?
+    def prodId=: (untyped) -> untyped
+    alias prod_id prodId
+    alias prod_id= prodId=
+    def created: () -> (String)?
+    def created=: (untyped) -> untyped
+    def updated: () -> (String)?
+    def updated=: (untyped) -> untyped
+    def sequence: () -> (Integer)?
+    def sequence=: (untyped) -> untyped
+    def method: () -> (String)?
+    def method=: (untyped) -> untyped
+    def title: () -> (String)?
+    def title=: (untyped) -> untyped
+    def description: () -> (String)?
+    def description=: (untyped) -> untyped
+    def descriptionContentType: () -> (String)?
+    def descriptionContentType=: (untyped) -> untyped
+    alias description_content_type descriptionContentType
+    alias description_content_type= descriptionContentType=
+    def showWithoutTime: () -> (bool)?
+    def showWithoutTime=: (untyped) -> untyped
+    alias show_without_time showWithoutTime
+    alias show_without_time= showWithoutTime=
+    def locations: () -> (IdMap[Location])?
+    def locations=: (untyped) -> untyped
+    def virtualLocations: () -> (IdMap[VirtualLocation])?
+    def virtualLocations=: (untyped) -> untyped
+    alias virtual_locations virtualLocations
+    alias virtual_locations= virtualLocations=
+    def links: () -> (IdMap[Link])?
+    def links=: (untyped) -> untyped
+    def locale: () -> (String)?
+    def locale=: (untyped) -> untyped
+    def keywords: () -> (Hash[String, bool])?
+    def keywords=: (untyped) -> untyped
+    def categories: () -> (Hash[String, bool])?
+    def categories=: (untyped) -> untyped
+    def color: () -> (String)?
+    def color=: (untyped) -> untyped
+    def recurrenceId: () -> (LocalDateTime)?
+    def recurrenceId=: (untyped) -> untyped
+    alias recurrence_id recurrenceId
+    alias recurrence_id= recurrenceId=
+    def recurrenceIdTimeZone: () -> ((String)?)?
+    def recurrenceIdTimeZone=: (untyped) -> untyped
+    alias recurrence_id_time_zone recurrenceIdTimeZone
+    alias recurrence_id_time_zone= recurrenceIdTimeZone=
+    def recurrenceRules: () -> (Array[RecurrenceRule])?
+    def recurrenceRules=: (untyped) -> untyped
+    alias recurrence_rules recurrenceRules
+    alias recurrence_rules= recurrenceRules=
+    def excludedRecurrenceRules: () -> (Array[RecurrenceRule])?
+    def excludedRecurrenceRules=: (untyped) -> untyped
+    alias excluded_recurrence_rules excludedRecurrenceRules
+    alias excluded_recurrence_rules= excludedRecurrenceRules=
+    def recurrenceOverrides: () -> (Hash[String, object])?
+    def recurrenceOverrides=: (untyped) -> untyped
+    alias recurrence_overrides recurrenceOverrides
+    alias recurrence_overrides= recurrenceOverrides=
+    def excluded: () -> (bool)?
+    def excluded=: (untyped) -> untyped
+    def priority: () -> (Integer)?
+    def priority=: (untyped) -> untyped
+    def freeBusyStatus: () -> (String)?
+    def freeBusyStatus=: (untyped) -> untyped
+    alias free_busy_status freeBusyStatus
+    alias free_busy_status= freeBusyStatus=
+    def privacy: () -> (String)?
+    def privacy=: (untyped) -> untyped
+    def replyTo: () -> (Hash[String, String])?
+    def replyTo=: (untyped) -> untyped
+    alias reply_to replyTo
+    alias reply_to= replyTo=
+    def sentBy: () -> (String)?
+    def sentBy=: (untyped) -> untyped
+    alias sent_by sentBy
+    alias sent_by= sentBy=
+    def participants: () -> (IdMap[Participant])?
+    def participants=: (untyped) -> untyped
+    def requestStatus: () -> (String)?
+    def requestStatus=: (untyped) -> untyped
+    alias request_status requestStatus
+    alias request_status= requestStatus=
+    def useDefaultAlerts: () -> (bool)?
+    def useDefaultAlerts=: (untyped) -> untyped
+    alias use_default_alerts useDefaultAlerts
+    alias use_default_alerts= useDefaultAlerts=
+    def alerts: () -> (IdMap[Alert])?
+    def alerts=: (untyped) -> untyped
+    def localizations: () -> (Hash[String, object])?
+    def localizations=: (untyped) -> untyped
+    def timeZone: () -> ((String)?)?
+    def timeZone=: (untyped) -> untyped
+    alias time_zone timeZone
+    alias time_zone= timeZone=
+    def timeZones: () -> (IdMap[TimeZone])?
+    def timeZones=: (untyped) -> untyped
+    alias time_zones timeZones
+    alias time_zones= timeZones=
+    def start: () -> (LocalDateTime)?
+    def start=: (untyped) -> untyped
+    def duration: () -> (Duration)?
+    def duration=: (untyped) -> untyped
+    def status: () -> (String)?
+    def status=: (untyped) -> untyped
+  end
+  class Task < Model
+    include RecurringCalendar
+    def uid: () -> (String)?
+    def uid=: (untyped) -> untyped
+    def relatedTo: () -> (IdMap[Relation])?
+    def relatedTo=: (untyped) -> untyped
+    alias related_to relatedTo
+    alias related_to= relatedTo=
+    def prodId: () -> (String)?
+    def prodId=: (untyped) -> untyped
+    alias prod_id prodId
+    alias prod_id= prodId=
+    def created: () -> (String)?
+    def created=: (untyped) -> untyped
+    def updated: () -> (String)?
+    def updated=: (untyped) -> untyped
+    def sequence: () -> (Integer)?
+    def sequence=: (untyped) -> untyped
+    def method: () -> (String)?
+    def method=: (untyped) -> untyped
+    def title: () -> (String)?
+    def title=: (untyped) -> untyped
+    def description: () -> (String)?
+    def description=: (untyped) -> untyped
+    def descriptionContentType: () -> (String)?
+    def descriptionContentType=: (untyped) -> untyped
+    alias description_content_type descriptionContentType
+    alias description_content_type= descriptionContentType=
+    def showWithoutTime: () -> (bool)?
+    def showWithoutTime=: (untyped) -> untyped
+    alias show_without_time showWithoutTime
+    alias show_without_time= showWithoutTime=
+    def locations: () -> (IdMap[Location])?
+    def locations=: (untyped) -> untyped
+    def virtualLocations: () -> (IdMap[VirtualLocation])?
+    def virtualLocations=: (untyped) -> untyped
+    alias virtual_locations virtualLocations
+    alias virtual_locations= virtualLocations=
+    def links: () -> (IdMap[Link])?
+    def links=: (untyped) -> untyped
+    def locale: () -> (String)?
+    def locale=: (untyped) -> untyped
+    def keywords: () -> (Hash[String, bool])?
+    def keywords=: (untyped) -> untyped
+    def categories: () -> (Hash[String, bool])?
+    def categories=: (untyped) -> untyped
+    def color: () -> (String)?
+    def color=: (untyped) -> untyped
+    def recurrenceId: () -> (LocalDateTime)?
+    def recurrenceId=: (untyped) -> untyped
+    alias recurrence_id recurrenceId
+    alias recurrence_id= recurrenceId=
+    def recurrenceIdTimeZone: () -> ((String)?)?
+    def recurrenceIdTimeZone=: (untyped) -> untyped
+    alias recurrence_id_time_zone recurrenceIdTimeZone
+    alias recurrence_id_time_zone= recurrenceIdTimeZone=
+    def recurrenceRules: () -> (Array[RecurrenceRule])?
+    def recurrenceRules=: (untyped) -> untyped
+    alias recurrence_rules recurrenceRules
+    alias recurrence_rules= recurrenceRules=
+    def excludedRecurrenceRules: () -> (Array[RecurrenceRule])?
+    def excludedRecurrenceRules=: (untyped) -> untyped
+    alias excluded_recurrence_rules excludedRecurrenceRules
+    alias excluded_recurrence_rules= excludedRecurrenceRules=
+    def recurrenceOverrides: () -> (Hash[String, object])?
+    def recurrenceOverrides=: (untyped) -> untyped
+    alias recurrence_overrides recurrenceOverrides
+    alias recurrence_overrides= recurrenceOverrides=
+    def excluded: () -> (bool)?
+    def excluded=: (untyped) -> untyped
+    def priority: () -> (Integer)?
+    def priority=: (untyped) -> untyped
+    def freeBusyStatus: () -> (String)?
+    def freeBusyStatus=: (untyped) -> untyped
+    alias free_busy_status freeBusyStatus
+    alias free_busy_status= freeBusyStatus=
+    def privacy: () -> (String)?
+    def privacy=: (untyped) -> untyped
+    def replyTo: () -> (Hash[String, String])?
+    def replyTo=: (untyped) -> untyped
+    alias reply_to replyTo
+    alias reply_to= replyTo=
+    def sentBy: () -> (String)?
+    def sentBy=: (untyped) -> untyped
+    alias sent_by sentBy
+    alias sent_by= sentBy=
+    def participants: () -> (IdMap[Participant])?
+    def participants=: (untyped) -> untyped
+    def requestStatus: () -> (String)?
+    def requestStatus=: (untyped) -> untyped
+    alias request_status requestStatus
+    alias request_status= requestStatus=
+    def useDefaultAlerts: () -> (bool)?
+    def useDefaultAlerts=: (untyped) -> untyped
+    alias use_default_alerts useDefaultAlerts
+    alias use_default_alerts= useDefaultAlerts=
+    def alerts: () -> (IdMap[Alert])?
+    def alerts=: (untyped) -> untyped
+    def localizations: () -> (Hash[String, object])?
+    def localizations=: (untyped) -> untyped
+    def timeZone: () -> ((String)?)?
+    def timeZone=: (untyped) -> untyped
+    alias time_zone timeZone
+    alias time_zone= timeZone=
+    def timeZones: () -> (IdMap[TimeZone])?
+    def timeZones=: (untyped) -> untyped
+    alias time_zones timeZones
+    alias time_zones= timeZones=
+    def due: () -> (LocalDateTime)?
+    def due=: (untyped) -> untyped
+    def start: () -> (LocalDateTime)?
+    def start=: (untyped) -> untyped
+    def estimatedDuration: () -> (Duration)?
+    def estimatedDuration=: (untyped) -> untyped
+    alias estimated_duration estimatedDuration
+    alias estimated_duration= estimatedDuration=
+    def percentComplete: () -> (Integer)?
+    def percentComplete=: (untyped) -> untyped
+    alias percent_complete percentComplete
+    alias percent_complete= percentComplete=
+    def progress: () -> (String)?
+    def progress=: (untyped) -> untyped
+    def progressUpdated: () -> (String)?
+    def progressUpdated=: (untyped) -> untyped
+    alias progress_updated progressUpdated
+    alias progress_updated= progressUpdated=
+  end
+  class Group < Model
+    def uid: () -> (String)?
+    def uid=: (untyped) -> untyped
+    def updated: () -> (String)?
+    def updated=: (untyped) -> untyped
+    def entries: () -> (Array[Event | Task | object])?
+    def entries=: (untyped) -> untyped
+    def source: () -> (String)?
+    def source=: (untyped) -> untyped
+    def prodId: () -> (String)?
+    def prodId=: (untyped) -> untyped
+    alias prod_id prodId
+    alias prod_id= prodId=
+    def created: () -> (String)?
+    def created=: (untyped) -> untyped
+    def title: () -> (String)?
+    def title=: (untyped) -> untyped
+    def description: () -> (String)?
+    def description=: (untyped) -> untyped
+    def descriptionContentType: () -> (String)?
+    def descriptionContentType=: (untyped) -> untyped
+    alias description_content_type descriptionContentType
+    alias description_content_type= descriptionContentType=
+    def links: () -> (IdMap[Link])?
+    def links=: (untyped) -> untyped
+    def locale: () -> (String)?
+    def locale=: (untyped) -> untyped
+    def keywords: () -> (Hash[String, bool])?
+    def keywords=: (untyped) -> untyped
+    def categories: () -> (Hash[String, bool])?
+    def categories=: (untyped) -> untyped
+    def color: () -> (String)?
+    def color=: (untyped) -> untyped
+    def timeZones: () -> (IdMap[TimeZone])?
+    def timeZones=: (untyped) -> untyped
+    alias time_zones timeZones
+    alias time_zones= timeZones=
+  end
+  class Relation < Model
+    def relation: () -> (Hash[String, bool])?
+    def relation=: (untyped) -> untyped
+  end
+  class Link < Model
+    def href: () -> (String)?
+    def href=: (untyped) -> untyped
+    def cid: () -> (String)?
+    def cid=: (untyped) -> untyped
+    def contentType: () -> (String)?
+    def contentType=: (untyped) -> untyped
+    alias content_type contentType
+    alias content_type= contentType=
+    def size: () -> (Integer)?
+    def size=: (untyped) -> untyped
+    def rel: () -> (String)?
+    def rel=: (untyped) -> untyped
+    def display: () -> (String)?
+    def display=: (untyped) -> untyped
+    def title: () -> (String)?
+    def title=: (untyped) -> untyped
+  end
+  class Location < Model
+    def name: () -> (String)?
+    def name=: (untyped) -> untyped
+    def description: () -> (String)?
+    def description=: (untyped) -> untyped
+    def locationTypes: () -> (Hash[String, bool])?
+    def locationTypes=: (untyped) -> untyped
+    alias location_types locationTypes
+    alias location_types= locationTypes=
+    def relativeTo: () -> (String)?
+    def relativeTo=: (untyped) -> untyped
+    alias relative_to relativeTo
+    alias relative_to= relativeTo=
+    def timeZone: () -> (String)?
+    def timeZone=: (untyped) -> untyped
+    alias time_zone timeZone
+    alias time_zone= timeZone=
+    def coordinates: () -> (String)?
+    def coordinates=: (untyped) -> untyped
+    def links: () -> (IdMap[Link])?
+    def links=: (untyped) -> untyped
+  end
+  class VirtualLocation < Model
+    def name: () -> (String)?
+    def name=: (untyped) -> untyped
+    def description: () -> (String)?
+    def description=: (untyped) -> untyped
+    def uri: () -> (String)?
+    def uri=: (untyped) -> untyped
+    def features: () -> (Hash[String, bool])?
+    def features=: (untyped) -> untyped
+  end
+  class Participant < Model
+    def name: () -> (String)?
+    def name=: (untyped) -> untyped
+    def email: () -> (String)?
+    def email=: (untyped) -> untyped
+    def description: () -> (String)?
+    def description=: (untyped) -> untyped
+    def sendTo: () -> (Hash[String, String])?
+    def sendTo=: (untyped) -> untyped
+    alias send_to sendTo
+    alias send_to= sendTo=
+    def kind: () -> (String)?
+    def kind=: (untyped) -> untyped
+    def roles: () -> (Hash[String, bool])?
+    def roles=: (untyped) -> untyped
+    def locationId: () -> (String)?
+    def locationId=: (untyped) -> untyped
+    alias location_id locationId
+    alias location_id= locationId=
+    def language: () -> (String)?
+    def language=: (untyped) -> untyped
+    def participationStatus: () -> (String)?
+    def participationStatus=: (untyped) -> untyped
+    alias participation_status participationStatus
+    alias participation_status= participationStatus=
+    def participationComment: () -> (String)?
+    def participationComment=: (untyped) -> untyped
+    alias participation_comment participationComment
+    alias participation_comment= participationComment=
+    def expectReply: () -> (bool)?
+    def expectReply=: (untyped) -> untyped
+    alias expect_reply expectReply
+    alias expect_reply= expectReply=
+    def scheduleAgent: () -> (String)?
+    def scheduleAgent=: (untyped) -> untyped
+    alias schedule_agent scheduleAgent
+    alias schedule_agent= scheduleAgent=
+    def scheduleForceSend: () -> (bool)?
+    def scheduleForceSend=: (untyped) -> untyped
+    alias schedule_force_send scheduleForceSend
+    alias schedule_force_send= scheduleForceSend=
+    def scheduleSequence: () -> (Integer)?
+    def scheduleSequence=: (untyped) -> untyped
+    alias schedule_sequence scheduleSequence
+    alias schedule_sequence= scheduleSequence=
+    def scheduleStatus: () -> (Array[String])?
+    def scheduleStatus=: (untyped) -> untyped
+    alias schedule_status scheduleStatus
+    alias schedule_status= scheduleStatus=
+    def scheduleUpdated: () -> (String)?
+    def scheduleUpdated=: (untyped) -> untyped
+    alias schedule_updated scheduleUpdated
+    alias schedule_updated= scheduleUpdated=
+    def sentBy: () -> (String)?
+    def sentBy=: (untyped) -> untyped
+    alias sent_by sentBy
+    alias sent_by= sentBy=
+    def invitedBy: () -> (String)?
+    def invitedBy=: (untyped) -> untyped
+    alias invited_by invitedBy
+    alias invited_by= invitedBy=
+    def delegatedTo: () -> (Hash[String, bool])?
+    def delegatedTo=: (untyped) -> untyped
+    alias delegated_to delegatedTo
+    alias delegated_to= delegatedTo=
+    def delegatedFrom: () -> (Hash[String, bool])?
+    def delegatedFrom=: (untyped) -> untyped
+    alias delegated_from delegatedFrom
+    alias delegated_from= delegatedFrom=
+    def memberOf: () -> (Hash[String, bool])?
+    def memberOf=: (untyped) -> untyped
+    alias member_of memberOf
+    alias member_of= memberOf=
+    def links: () -> (IdMap[Link])?
+    def links=: (untyped) -> untyped
+    def progress: () -> (String)?
+    def progress=: (untyped) -> untyped
+    def progressUpdated: () -> (String)?
+    def progressUpdated=: (untyped) -> untyped
+    alias progress_updated progressUpdated
+    alias progress_updated= progressUpdated=
+    def percentComplete: () -> (Integer)?
+    def percentComplete=: (untyped) -> untyped
+    alias percent_complete percentComplete
+    alias percent_complete= percentComplete=
+  end
+  class Alert < Model
+    def trigger: () -> (OffsetTrigger | AbsoluteTrigger | object)?
+    def trigger=: (untyped) -> untyped
+    def acknowledged: () -> (String)?
+    def acknowledged=: (untyped) -> untyped
+    def relatedTo: () -> (IdMap[Relation])?
+    def relatedTo=: (untyped) -> untyped
+    alias related_to relatedTo
+    alias related_to= relatedTo=
+    def action: () -> (String)?
+    def action=: (untyped) -> untyped
+  end
+  class OffsetTrigger < Model
+    def offset: () -> (SignedDuration)?
+    def offset=: (untyped) -> untyped
+    def relativeTo: () -> (String)?
+    def relativeTo=: (untyped) -> untyped
+    alias relative_to relativeTo
+    alias relative_to= relativeTo=
+  end
+  class AbsoluteTrigger < Model
+    def when: () -> (String)?
+    def when=: (untyped) -> untyped
+  end
+  class RecurrenceRule < Model
+    def to_rrule: () -> String
+    def frequency: () -> (String)?
+    def frequency=: (untyped) -> untyped
+    def interval: () -> (Integer)?
+    def interval=: (untyped) -> untyped
+    def rscale: () -> (String)?
+    def rscale=: (untyped) -> untyped
+    def skip: () -> (String)?
+    def skip=: (untyped) -> untyped
+    def firstDayOfWeek: () -> (String)?
+    def firstDayOfWeek=: (untyped) -> untyped
+    alias first_day_of_week firstDayOfWeek
+    alias first_day_of_week= firstDayOfWeek=
+    def byDay: () -> (Array[NDay])?
+    def byDay=: (untyped) -> untyped
+    alias by_day byDay
+    alias by_day= byDay=
+    def byMonthDay: () -> (Array[Integer])?
+    def byMonthDay=: (untyped) -> untyped
+    alias by_month_day byMonthDay
+    alias by_month_day= byMonthDay=
+    def byMonth: () -> (Array[String])?
+    def byMonth=: (untyped) -> untyped
+    alias by_month byMonth
+    alias by_month= byMonth=
+    def byYearDay: () -> (Array[Integer])?
+    def byYearDay=: (untyped) -> untyped
+    alias by_year_day byYearDay
+    alias by_year_day= byYearDay=
+    def byWeekNo: () -> (Array[Integer])?
+    def byWeekNo=: (untyped) -> untyped
+    alias by_week_no byWeekNo
+    alias by_week_no= byWeekNo=
+    def byHour: () -> (Array[Integer])?
+    def byHour=: (untyped) -> untyped
+    alias by_hour byHour
+    alias by_hour= byHour=
+    def byMinute: () -> (Array[Integer])?
+    def byMinute=: (untyped) -> untyped
+    alias by_minute byMinute
+    alias by_minute= byMinute=
+    def bySecond: () -> (Array[Integer])?
+    def bySecond=: (untyped) -> untyped
+    alias by_second bySecond
+    alias by_second= bySecond=
+    def bySetPosition: () -> (Array[Integer])?
+    def bySetPosition=: (untyped) -> untyped
+    alias by_set_position bySetPosition
+    alias by_set_position= bySetPosition=
+    def count: () -> (Integer)?
+    def count=: (untyped) -> untyped
+    def until: () -> (LocalDateTime)?
+    def until=: (untyped) -> untyped
+  end
+  class NDay < Model
+    def day: () -> (String)?
+    def day=: (untyped) -> untyped
+    def nthOfPeriod: () -> (Integer)?
+    def nthOfPeriod=: (untyped) -> untyped
+    alias nth_of_period nthOfPeriod
+    alias nth_of_period= nthOfPeriod=
+  end
+  class TimeZone < Model
+    def tzId: () -> (String)?
+    def tzId=: (untyped) -> untyped
+    alias tz_id tzId
+    alias tz_id= tzId=
+    def updated: () -> (String)?
+    def updated=: (untyped) -> untyped
+    def url: () -> (String)?
+    def url=: (untyped) -> untyped
+    def validUntil: () -> (String)?
+    def validUntil=: (untyped) -> untyped
+    alias valid_until validUntil
+    alias valid_until= validUntil=
+    def aliases: () -> (Hash[String, bool])?
+    def aliases=: (untyped) -> untyped
+    def standard: () -> (Array[TimeZoneRule])?
+    def standard=: (untyped) -> untyped
+    def daylight: () -> (Array[TimeZoneRule])?
+    def daylight=: (untyped) -> untyped
+  end
+  class TimeZoneRule < Model
+    def start: () -> (LocalDateTime)?
+    def start=: (untyped) -> untyped
+    def offsetFrom: () -> (String)?
+    def offsetFrom=: (untyped) -> untyped
+    alias offset_from offsetFrom
+    alias offset_from= offsetFrom=
+    def offsetTo: () -> (String)?
+    def offsetTo=: (untyped) -> untyped
+    alias offset_to offsetTo
+    alias offset_to= offsetTo=
+    def recurrenceRules: () -> (Array[RecurrenceRule])?
+    def recurrenceRules=: (untyped) -> untyped
+    alias recurrence_rules recurrenceRules
+    alias recurrence_rules= recurrenceRules=
+    def recurrenceOverrides: () -> (Hash[String, object])?
+    def recurrenceOverrides=: (untyped) -> untyped
+    alias recurrence_overrides recurrenceOverrides
+    alias recurrence_overrides= recurrenceOverrides=
+    def names: () -> (Hash[String, bool])?
+    def names=: (untyped) -> untyped
+    def comments: () -> (Array[String])?
+    def comments=: (untyped) -> untyped
+  end
+end
+
+module JSCalendar = Jscalendar
