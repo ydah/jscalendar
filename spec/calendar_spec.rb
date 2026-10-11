@@ -142,6 +142,15 @@ RSpec.describe JSCalendar do
     expect(item.title).to eq("English")
     expect { parse(event(localizations: { "de" => { "missing/name" => "Name" } })) }.to raise_error(JSCalendar::ValidationError)
   end
+
+  it "matches localization language tags without case sensitivity" do
+    item = parse(event(title: "Original", localizations: { "en-US" => { "title" => "Translation" } }))
+    localized = item.localize("EN-us")
+    expect(localized.title).to eq("Translation")
+    expect(localized.locale).to eq("EN-us")
+    expect(item.title).to eq("Original")
+    expect(item.to_h.fetch("localizations").keys).to eq(["en-US"])
+  end
 end
 
 RSpec.describe JSCalendar::PatchObject do

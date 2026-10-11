@@ -21,7 +21,9 @@ module Jscalendar
     end
 
     def localize(language)
-      patch = @data.fetch("localizations", {})[language]
+      localizations = @data.fetch("localizations", {})
+      key = localizations.keys.find { |tag| tag.casecmp?(language) }
+      patch = localizations[key]
       return self.class.new(to_h, time_zones: @time_zones, **@limits) unless patch
 
       data = PatchObject.new(PatchObject.localization(patch), **@limits).apply(to_h, validate: false)
