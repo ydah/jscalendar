@@ -20,12 +20,6 @@
 
 Read, validate, build and expand calendar events and tasks using [RFC 8984](https://www.rfc-editor.org/rfc/rfc8984).
 
-## Features
-
-- Build typed events, tasks, and groups while preserving extension fields.
-- Expand Gregorian recurrence with time zones, exclusions, and overrides.
-- Apply validated patches and localizations with configurable resource limits.
-
 ## Installation
 
 Add the gem to your Gemfile:
@@ -36,7 +30,7 @@ gem "jscalendar"
 
 Then run `bundle install`.
 
-Ruby 3.3 or newer is required. CI checks maintained CRuby versions, Ruby head, JRuby and TruffleRuby on Linux and macOS, and json 2 and 3. Runtime dependencies are `json` and `tzinfo`. Gregorian recurrence generation is implemented by this library. Install `tzinfo-data` on systems without a zoneinfo database, including Windows. No other Gem from this format family is required.
+Requires Ruby 3.3 or later, `json`, and `tzinfo`. Supports CRuby, JRuby, and TruffleRuby. Install `tzinfo-data` on systems without a zoneinfo database, including Windows.
 
 ## Quick start
 
@@ -88,7 +82,7 @@ patch = JSCalendar::PatchObject.new("title" => "New title", "description" => nil
 patched = patch.apply(calendar.to_h)
 ```
 
-Strict parsing raises `ValidationError` with `errors` and a JSON Pointer in `pointer`. Lenient parsing preserves invalid fields with diagnostics. Serialization always validates. Unknown root types and malformed JSON raise `ParseError`; resource bounds raise `LimitError`, including in lenient mode. Duplicate keys are rejected with both supported json major versions.
+Strict parsing raises `ValidationError` with `errors` and a JSON Pointer in `pointer`. Lenient parsing preserves invalid fields with diagnostics. Serialization always validates. Unknown root types and malformed JSON raise `ParseError`; resource bounds raise `LimitError`, including in lenient mode. Duplicate JSON keys are rejected.
 
 Recurrence overrides ignore the protected property prefixes specified by RFC 8984 §4.3.5. An `excluded: true` override can contain no other change. Localizations ignore disallowed paths. Patches never partially modify their target.
 Localization language tags match without case sensitivity.
@@ -101,7 +95,7 @@ Floating date-times require an explicit zone for an instant: `event.start_time(t
 
 An occurrence inherits the base object and applies its override. `recurrence_id` identifies its original wall time, even if an override moves its start. DTSTART is always an included first instance and consumes one COUNT, as specified by JSCalendar. Exclusion rules include DTSTART only when it matches the rule. The result reports `truncated?` when the output/candidate bound cuts off the requested expansion.
 
-Time-zone results follow the installed TZInfo data. Its explicit future transition horizon can be shorter than other timezone databases (for example, the current Ruby data ends New York transitions in 2076); do not use the last known offset as a guarantee about distant-future civil time. Custom `timeZones` definitions can express application-owned transition rules.
+Time-zone results follow the installed TZInfo data. Its future transition horizon is finite; the last known offset is not a guarantee about distant-future civil time. Custom `timeZones` definitions can provide application-owned transition rules.
 
 ## Resource bounds
 
@@ -128,11 +122,9 @@ bundle exec rbs -I sig validate
 bundle exec ruby script/benchmark.rb
 ```
 
-RFC source documents and 52 generated examples are fetched into ignored `tmp/` with pinned checksums and a generated-fixture fingerprint. Original text, correction notes and the applicable test-source license notice remain there. RFC material, IANA downloads, external implementations, tests and build artifacts are excluded from the Gem. Authored implementation and validation metadata are MIT licensed.
-
-`script/update_registry.rb` checks property and enum identifiers against pinned IANA registries, CLDR calendar names and CSS Level 3 color names. Downloaded sources remain in ignored `tmp/registry/`; only identifiers needed for validation are present in the authored metadata. Updating a checksum requires reviewing the corresponding metadata differences. Source terms are available from [IANA](https://www.iana.org/help/licensing-terms), [Unicode](https://www.unicode.org/license.txt) and [W3C](https://www.w3.org/copyright/document-license/).
-
-Every Ruby test job checks all 42 RFC 5545 recurrence examples against the results printed in the downloaded RFC. Finite examples also check for unexpected extra occurrences; infinite examples are checked through the last printed date. RFC 8984's ten examples all round trip. See [specification decisions](docs/specification.md) for errata and extraction corrections.
+The first test run downloads RFC fixtures into `tmp/`; later runs reuse the cache.
+Run `bundle exec ruby script/update_registry.rb` to check registered identifiers.
+See [specification decisions](docs/specification.md) for errata and recurrence semantics.
 
 ## Contributing
 
@@ -141,5 +133,3 @@ Bug reports and pull requests are welcome on [GitHub](https://github.com/ydah/js
 ## License
 
 Released under the [MIT License](LICENSE.txt).
-
-Additional dependencies must offer the MIT license, including development and comparison tools. The Ruby runtime and its standard libraries are exceptions to this policy. Reference documents and registry facts are test/specification inputs, not dependency implementations. See [implementation provenance](docs/provenance.md) for the scope and limits of the source audit.
